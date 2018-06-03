@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "none",
-    "start":"node app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/derting/MuxiAPIService/issues"
   },
-  "homepage": "https://github.com/derting/MuxiAPIService#readme"
+  "homepage": "https://github.com/derting/MuxiAPIService#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
 }

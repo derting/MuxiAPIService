@@ -4,7 +4,11 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  res.status(200).send('Hello, world!').end();
+  res.status(200).send('Muxi Project').end();
+});
+
+app.get('/muxi/version', (req, res) => {
+  res.status(200).send('V1.0.0').end();
 });
 
 const PORT = process.env.PORT || 8080;

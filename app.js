@@ -3,8 +3,10 @@ const app = express();
 var bodyParser = require('body-parser');
 const fs = require('fs');
 
-var hymnary_1 = require('./src/hymnary_1.json');
-var hymnary_2 = require('./src/hymnary_2.json');
+//var hymnary_1 = require('./src/hymnary_1.json');
+//var hymnary_2 = require('./src/hymnary_2.json');
+var hymnary_1 = {};
+var hymnary_2 = {};
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -32,16 +34,11 @@ router.get('/muxi/version', (req, res) => {
   res.status(200).json({ version: version }).end();
 });
 
-// api/muxi/hymnary_1
-router.get('/muxi/hymnary_1', (req, res) => {
-  res.status(200).send(hymnary_1).end();
+// http://127.0.0.1:8080/api/muxi/hymnary_2
+router.get('/muxi/:fileName', (req, res) => {
+  readHymnaryJson(req.params.fileName);
+  res.status(200).send(eval(req.params.fileName)).end();
 });
-
-// api/muxi/hymnary_2
-router.get('/muxi/hymnary_2', (req, res) => {
-  res.status(200).send(hymnary_2).end();
-});
-
 
 // <example>
 //  method: patch
@@ -88,6 +85,9 @@ function UpdateFileHandler(option, fileName, requestBody) {
     DeleteFileContent(fileContent, requestBody);
   }
 
+  //Upgrade hymnary's version
+  fileContent.version = upgradeVersion(fileContent.version);
+ 
   var fileContent_md = JSON.stringify(fileContent);
   fs.writeFileSync(fileURL, fileContent_md, 'utf8');
 
@@ -95,7 +95,7 @@ function UpdateFileHandler(option, fileName, requestBody) {
 }
 
 function UpdateFileContent(fileContent, requestObj) {
-  var result = fileContent[requestObj.file].find(function () { return key == requestObj.key; });
+  var result = fileContent[requestObj.file].find(function (x) { return x.key == requestObj.key; });
   result.content = requestObj.content;
 }
 
@@ -109,4 +109,16 @@ function CheckFileExist(path) {
     return true;
   else
     return false;
+}
+
+//read Json File
+function readHymnaryJson(fileName) {
+  var path = './src/' + fileName + '.json';
+  var fileContent = fs.readFileSync(require.resolve(path), 'utf8');
+  eval(fileName + ' = JSON.parse(fileContent);');
+}
+
+function upgradeVersion(originalVersion)
+{
+  return originalVersion += 1;
 }
